@@ -5,11 +5,12 @@ export default function AddNote() {
   const { addNote } = useContext(noteContext);
 
   const [note, setNote] = useState({ title: "", description: "", tag: "" });
-  const onChange = (e) => {
-    setNote({ ...note, [e.target.name]: e.target.value });
-  };
+    const onChange = (e) => {
+      setNote({ ...note, [e.target.name]: e.target.value });
+    };
   const handleClick = (e) => {
     addNote(note.title, note.description, note.tag);
+    setNote({title:"",description:"",tag:""});
     e.preventDefault();
   };
   return (
@@ -17,6 +18,7 @@ export default function AddNote() {
       <div className="form-group">
         <label htmlFor="title">Title</label>
         <input
+          value={note.title}
           type="text"
           className="form-control"
           id="title"
@@ -31,6 +33,7 @@ export default function AddNote() {
       <div className="form-group">
         <label htmlFor="description">Description</label>
         <textarea
+        value={note.description}
           className="form-control"
           id="description"
           rows="3"
@@ -50,6 +53,7 @@ export default function AddNote() {
           </div>
           <input
             type="text"
+            value={note.tag}
             className="form-control"
             id="tag"
             placeholder="Enter Tag"

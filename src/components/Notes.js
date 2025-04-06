@@ -1,14 +1,26 @@
-import { React, useContext,useEffect } from "react";
+import { React, useContext,useEffect, } from "react";
 import UserNotes from "./UserNotes";
 import noteContext from "../context/notes/noteContext";
 import AddNote from "./AddNote";
+import { useNavigate } from 'react-router-dom';
+
+
 export default function Notes() {
+  
+  const navigate = useNavigate();
+  if(!localStorage.getItem("token")){
+    navigate('login');
+  }
+  
   const { notes,fetchAllNotes } = useContext(noteContext);
-  useEffect(()=>{
+  useEffect(() => {
     fetchAllNotes();
-  },[fetchAllNotes])
+    // eslint-disable-next-line
+  }, []);
+  
+
   return (
-    <>
+    localStorage.getItem("token")&&<>
       <AddNote />
       <div className="list-group my-5">
         <div className="container mx-2">

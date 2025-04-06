@@ -21,7 +21,7 @@ router.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({success:false, errors: errors.array() });
     }
 
     try {
@@ -31,7 +31,7 @@ router.post(
         //if user exits with the given mail
         return res
           .status(400)
-          .json({ error: "User with this email already exists" });
+          .json({success:false, error: "User with this email already exists" });
       }
       const salt = await bcrypt.genSaltSync(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -50,7 +50,7 @@ router.post(
       };
       const authToken = jwt.sign(data, JWT_SECRET);
 
-      res.json({ authToken: authToken });
+      res.json({success:true, authToken: authToken });
     } catch (error) {
       console.error(error.message);
       
@@ -83,12 +83,14 @@ router.post(
         //if user dosenot exits with the given mail
         return res
           .status(400)
-          .json({ error: "wrong password or email id" });
+          .json({ success:false,error: "wrong password or email id" });
       }
 
       const comparePass = await bcrypt.compare(password,user.password);
       if(!comparePass){
-        res.status(400).send("wrong password or email id");
+        return res
+          .status(400)
+          .json({ success:false,error: "wrong password or email id" });
       }
 
       const payload = {
@@ -98,7 +100,7 @@ router.post(
       };
       const authToken = jwt.sign(payload, JWT_SECRET);
 
-      res.json({ authToken: authToken });
+      res.json({ success:true,authToken: authToken });
 
     } catch (error) {
       console.error(error.message);

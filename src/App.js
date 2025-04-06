@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Alert from "./components/Alert";
 import AlertState from "./context/notes/AlertSate";
+import Logout from "./components/Logout";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
                 <Route exact path="/" element={<Home />}></Route>
                 <Route exact path="/about" element={<About />}></Route>
                 <Route exact path="/login" element={<Login />}></Route>
+                <Route exact path="/logout" element={<Logout/>}></Route>
                 <Route exact path="/signup" element={<SignUp />}></Route>
               </Routes>
             </div>

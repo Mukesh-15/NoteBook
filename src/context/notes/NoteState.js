@@ -1,4 +1,4 @@
-import { useContext, useState  } from "react";
+import { useContext, useState,useCallback  } from "react";
 import NoteContext from "./noteContext";
 import alertContext from "./alertContext";
 
@@ -13,54 +13,66 @@ const NoteState = (props) => {
 
 
   //fetch all notes
-  const fetchAllNotes = async () => {
-    const response = await fetch(`${host}/notes/fetchallnotes`, {
-      method: "GET",
-      headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjdiOWZiNWQ2OGZlMDRlODg1Yjg2NjJkIn0sImlhdCI6MTc0MDI0MTc4Mn0.lAXro1H9X3R_ODUKSTZMy1j27SDixdGdyDgXaVTZo1w",
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await response.json();
-    setNotes(json);
-  };
+  const fetchAllNotes = useCallback(async () => {
+    try {
+      const response = await fetch(`${host}/notes/fetchallnotes`, {
+        method: "GET",
+        headers: {
+          "auth-token": localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      console.log(json);
+      setNotes(json);
+    } catch (error) {
+      setAlert("danger", "Internal Server Error!");
+    }
+  }, [host, setAlert]);
+  
 
   //ADD Note
   const addNote = async (title, description, tag) => {
-    const response = await fetch(`${host}/notes/addnote`, { 
-      method: "POST",
-      headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjdiOWZiNWQ2OGZlMDRlODg1Yjg2NjJkIn0sImlhdCI6MTc0MDI0MTc4Mn0.lAXro1H9X3R_ODUKSTZMy1j27SDixdGdyDgXaVTZo1w",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, description, tag }),
-    });
-    const json = await response.json();
-    console.log(json);
-    setNotes(notes.concat([{_id:json._id,title,description,tag}]));
-    setAlert("success","Note added successfully");
+    try {
+      const response = await fetch(`${host}/notes/addnote`, { 
+        method: "POST",
+        headers: {
+          "auth-token":
+          localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title, description, tag }),
+      });
+      const note = await response.json();
+      setNotes(notes.concat([note]));
+      setAlert("success","Note added successfully");
+    } catch (error) {
+      setAlert("danger","Internal Server Error!");
+    }
   };
 
   //Delete Note
   const deleteNote = async (note_id) => {
     // api call
-    const response = await fetch(`${host}/notes/deletenote/${note_id}`, {
-      method: "DELETE",
-      headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjdiOWZiNWQ2OGZlMDRlODg1Yjg2NjJkIn0sImlhdCI6MTc0MDI0MTc4Mn0.lAXro1H9X3R_ODUKSTZMy1j27SDixdGdyDgXaVTZo1w",
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await response.json();
-    console.log(json);
-    const newNotes = notes.filter((note) => {
-      return note._id !== note_id;
-    });
-    setNotes(newNotes);
-    setAlert("success","Note deleted successfully");
+    try {
+      const response = await fetch(`${host}/notes/deletenote/${note_id}`, {
+        method: "DELETE",
+        headers: {
+          "auth-token":
+          localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      console.log(json);
+      const newNotes = notes.filter((note) => {
+        return note._id !== note_id;
+      });
+      setNotes(newNotes);
+      setAlert("success","Note deleted successfully");
+    } catch (error) {
+      setAlert("danger","Internal Server Error!");
+    }
   };
 
   //Edit Note
@@ -70,7 +82,7 @@ const NoteState = (props) => {
       method: "PUT",
       headers: {
         "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjdiOWZiNWQ2OGZlMDRlODg1Yjg2NjJkIn0sImlhdCI6MTc0MDI0MTc4Mn0.lAXro1H9X3R_ODUKSTZMy1j27SDixdGdyDgXaVTZo1w",
+        localStorage.getItem("token"),
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ title, description, tag }),
@@ -85,7 +97,6 @@ const NoteState = (props) => {
         newNotes[i].title = title;
         newNotes[i].description = description;
         newNotes[i].tag = tag;
-
         break;
       }
       

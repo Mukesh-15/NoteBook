@@ -9,7 +9,7 @@ export default function Navbar() {
   // }, [location]);
   
   return (
-    <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <p className="navbar-brand" href="#">
         NoteBook
       </p>
@@ -39,16 +39,13 @@ export default function Navbar() {
           </li>
           
         </ul>
-        <form className="form-inline my-2 my-lg-0">
-          <input
-            className="form-control mr-sm-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
-            Search
-          </button>
+        <form className="d-flex">
+          {
+            (!localStorage.getItem("token"))?<>
+            <Link className="btn btn-primary mr-3" to="/login" role="button">Login</Link>
+            <Link className="btn btn-outline-primary" to="/Signup" role="button">Signup</Link>
+            </>:<Link className="btn btn-outline-danger mr-3" to="/logout" role="button">Logout</Link>
+          }
         </form>
       </div>
     </nav>
