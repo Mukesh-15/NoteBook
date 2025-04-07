@@ -8,13 +8,16 @@ import { useNavigate } from 'react-router-dom';
 export default function Notes() {
   
   const navigate = useNavigate();
-  if(!localStorage.getItem("token")){
-    navigate('login');
-  }
+  
   
   const { notes,fetchAllNotes } = useContext(noteContext);
   useEffect(() => {
-    fetchAllNotes();
+    if(!localStorage.getItem("token")){
+      navigate('login');
+    }else{
+      fetchAllNotes();
+    }
+    
     // eslint-disable-next-line
   }, []);
   
