@@ -77,7 +77,7 @@ router.post(
     const {email,password} = req.body;
 
     try {
-      let user = await User.findOne({email}); //check a user exits with a gievn mail and get the user
+      let user = await User.findOne({email}); //check a user exits with a given mail and get the user
 
       if (!user) {
         //if user dosenot exits with the given mail
